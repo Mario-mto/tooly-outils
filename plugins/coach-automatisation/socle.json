@@ -1,0 +1,68 @@
+[
+  {
+    "id": "valeur",
+    "nom": "Valeur d'une automatisation",
+    "etape": 3,
+    "definition": "Une automatisation vaut le coup quand la tâche revient souvent, prend du temps ou coûte cher en cas d'erreur. On pèse ce gain contre le temps de construction et d'entretien."
+  },
+  {
+    "id": "quand-ne-pas-automatiser",
+    "nom": "Quand ne pas automatiser",
+    "etape": 3,
+    "definition": "Une tâche rare, rapide ou sans déclencheur naturel ne mérite pas d'automatisation. Renoncer est alors la bonne décision, pas un échec."
+  },
+  {
+    "id": "decoupage",
+    "nom": "Découpage en étapes",
+    "etape": 4,
+    "definition": "On découpe la tâche en petites étapes successives, chacune avec un rôle clair. Un workflow bien découpé se construit, se teste et se répare étape par étape."
+  },
+  {
+    "id": "entrees-sorties",
+    "nom": "Entrées et sorties",
+    "etape": 4,
+    "definition": "Chaque étape reçoit quelque chose (une fiche, un fichier, un courriel) et produit quelque chose. Nommer ces entrées et sorties montre ce qui circule et où ça peut casser."
+  },
+  {
+    "id": "declencheur",
+    "nom": "Déclencheur",
+    "etape": 4,
+    "definition": "Le déclencheur est ce qui lance l'automatisation sans intervention humaine : un événement (une fiche change, un courriel arrive) ou une heure fixe. Sans déclencheur, ce n'est pas une automatisation."
+  },
+  {
+    "id": "choisir-forme",
+    "nom": "Choisir la forme",
+    "etape": 5,
+    "definition": "La forme dit où et comment l'automatisation tourne : routine Claude planifiée, flux Zoho, Deluge, tâche planifiée sur le poste ou mini-appli. On choisit la plus simple qui fait le travail de façon fiable."
+  },
+  {
+    "id": "agent-ou-automatisation",
+    "nom": "Agent ou automatisation",
+    "etape": 5,
+    "definition": "Une règle simple et fixe se confie à une automatisation classique, sans IA. Un agent n'est utile que quand il faut juger, rédiger ou s'adapter à des cas variés."
+  },
+  {
+    "id": "acces-secrets",
+    "nom": "Accès et secrets",
+    "etape": 6,
+    "definition": "L'automatisation agit avec tes accès personnels : elle doit n'en utiliser que le strict nécessaire. Une clé ou un mot de passe ne s'écrit jamais en clair dans un fichier."
+  },
+  {
+    "id": "demo-avant-reel",
+    "nom": "Données de démo avant données réelles",
+    "etape": 7,
+    "definition": "On teste d'abord sur des données fabriquées et marquées « TEST », qu'on supprime ensuite. Une erreur ne touche alors aucune vraie donnée."
+  },
+  {
+    "id": "tester-cas-reel",
+    "nom": "Tester sur un cas réel",
+    "etape": 7,
+    "definition": "Après la démo, on vérifie sur un vrai cas, avec ton accord explicite avant tout envoi, toute écriture ou toute suppression. C'est ce test qui prouve que l'automatisation sert vraiment."
+  },
+  {
+    "id": "documenter",
+    "nom": "Documenter",
+    "etape": 8,
+    "definition": "Une fiche dit ce que fait l'automatisation, ce qui la déclenche, les accès utilisés, où elle tourne et quoi faire si elle casse. Sans fiche, personne d'autre ne peut la reprendre ni la réparer."
+  }
+]

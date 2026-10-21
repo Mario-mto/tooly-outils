@@ -1,0 +1,14 @@
+{
+  "name": "tooly-outils",
+  "description": "Outils internes de Tooly pour Claude Code.",
+  "owner": {
+    "name": "Tooly"
+  },
+  "plugins": [
+    {
+      "name": "coach-automatisation",
+      "source": "./plugins/coach-automatisation",
+      "description": "Coach qui t'accompagne étape par étape pour transformer une tâche répétitive en automatisation avec déclencheur."
+    }
+  ]
+}
