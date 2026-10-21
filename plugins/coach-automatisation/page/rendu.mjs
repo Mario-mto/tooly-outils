@@ -34,6 +34,20 @@ export function echapper(texte) {
     .replace(/'/g, '&#39;');
 }
 
+// Texte du coach avec ses adresses : chaque https:// devient un lien court (le nom du site) et un
+// bouton qui copie l'adresse entière. Échappé d'abord : l'adresse s'arrête à tout guillemet.
+const ADRESSE = /https:\/\/(?:(?!&quot;|&#39;|&lt;|&gt;)\S)+/g;
+
+function avecLiens(texte) {
+  return echapper(texte).replace(ADRESSE, (brut) => {
+    const fin = /[.,;:!?)]+$/.exec(brut);
+    const url = fin ? brut.slice(0, -fin[0].length) : brut;
+    let site = 'le lien';
+    try { site = new URL(url.replace(/&amp;/g, '&')).hostname; } catch { /* adresse illisible */ }
+    return `<span class="lien-copie"><a class="lien" href="${url}" target="_blank" rel="noopener">${echapper(site)}</a><button class="copier" data-action="copier" data-texte="${url}">Copier le lien</button></span>${fin ? fin[0] : ''}`;
+  });
+}
+
 function cleReponse(ecran, carteId) {
   return `${ecran.n}-${carteId}`;
 }
@@ -102,13 +116,13 @@ function etapes(ecran) {
 
 function verdictQuiz(carte, juste) {
   return juste
-    ? `<div class="verdict"><b>Exactement.</b> ${echapper(carte.expliqueBonne)}</div>`
-    : `<div class="verdict"><b>Pas tout à fait.</b> ${echapper(carte.expliqueFausse)}</div>`;
+    ? `<div class="verdict"><b>Exactement.</b> ${avecLiens(carte.expliqueBonne)}</div>`
+    : `<div class="verdict"><b>Pas tout à fait.</b> ${avecLiens(carte.expliqueFausse)}</div>`;
 }
 
 function motDuCoach(carte) {
   const contenu = carte.motCoach
-    ? echapper(carte.motCoach)
+    ? avecLiens(carte.motCoach)
     : `${POINTS}<span class="sr">Le coach écrit</span>`;
   return `<div class="coach" aria-live="polite"><div class="av">C</div><div class="bulle"><div class="qui">Le coach</div><div class="txt">${contenu}</div></div></div>`;
 }
@@ -128,7 +142,7 @@ function carteQuiz(ecran, carte, rep) {
   if (repondu && accueil) {
     const bonne = (carte.options || []).find((o) => o.bonne);
     const nombre = parseInt(bonne ? bonne.texte : '', 10) || 0;
-    suite = `<div class="revele"><div class="gros" data-compteur="${nombre}">${nombre} h</div><p>${echapper(carte.expliqueBonne)}</p></div>`;
+    suite = `<div class="revele"><div class="gros" data-compteur="${nombre}">${nombre} h</div><p>${avecLiens(carte.expliqueBonne)}</p></div>`;
   } else if (repondu) {
     suite = verdictQuiz(carte, rep.juste === true);
     if (rep.juste === false) suite += motDuCoach(carte);
@@ -200,7 +214,7 @@ function bandeau(ecran, reponses) {
 function pourTaTache(ecran) {
   const p = ecran.pourTaTache;
   if (!p || !Array.isArray(p.lignes) || p.lignes.length === 0) return '';
-  const lignes = p.lignes.map((l) => `<div><b>${echapper(l.label)}</b><span>${echapper(l.valeur)}</span></div>`).join('');
+  const lignes = p.lignes.map((l) => `<div><b>${echapper(l.label)}</b><span>${avecLiens(l.valeur)}</span></div>`).join('');
   const verdict = p.verdict ? `<span class="verdict-tache">✓ ${echapper(p.verdict)}</span>` : '';
   return `<section class="carte"><h2>Pour ta tâche</h2><div class="sub">D'après ce que tu m'as décrit</div><div class="crit">${lignes}</div>${verdict}</section>`;
 }
@@ -220,13 +234,13 @@ function rendreAccueil(ecran, reponses) {
     ? `<div class="promesse"><div><span class="ic jaune">1</span>Aujourd'hui, on en récupère une.</div><div><span class="ic aqua">2</span>Je construis, toi tu comprends pourquoi.</div><div><span class="ic rose">3</span>Tu repars avec l'outil et le savoir-faire.</div></div>`
     : '';
   const bas = fini ? (reponseDe(ecran, reponses, 'continuer') ? attenteCoach() : boutonContinuer('On commence →')) : '';
-  const corps = `${haut(ecran)}<div class="accueil"><div><h1>${echapper(ecran.titre)}</h1><p class="lead">${echapper(ecran.explication)}</p>${cartes(ecran, reponses)}${promesse}${bas}</div>${illustration('formation')}</div>`;
+  const corps = `${haut(ecran)}<div class="accueil"><div><h1>${echapper(ecran.titre)}</h1><p class="lead">${avecLiens(ecran.explication)}</p>${cartes(ecran, reponses)}${promesse}${bas}</div>${illustration('formation')}</div>`;
   return enveloppe(ecran, 'accueil', corps, reponses);
 }
 
 function rendreEtape(ecran, reponses) {
   const e = etapeDe(ecran);
-  const cote = `<aside class="cote">${illustration(ILLUSTRATIONS[e])}<div class="surtitre">Étape ${e} sur 8 · ${echapper(NOMS_ETAPES[e])}</div><h1>${echapper(ecran.titre)}</h1><p class="lead">${echapper(ecran.explication)}</p></aside>`;
+  const cote = `<aside class="cote">${illustration(ILLUSTRATIONS[e])}<div class="surtitre">Étape ${e} sur 8 · ${echapper(NOMS_ETAPES[e])}</div><h1>${echapper(ecran.titre)}</h1><p class="lead">${avecLiens(ecran.explication)}</p></aside>`;
   const principal = `<div class="principal">${pourTaTache(ecran)}${cartes(ecran, reponses)}${suite(ecran, reponses)}</div>`;
   return enveloppe(ecran, 'etape', `${haut(ecran)}${etapes(ecran)}<div class="grille">${cote}${principal}</div>`, reponses);
 }
@@ -239,15 +253,15 @@ function rendreTravail(ecran, reponses) {
   const lignes = (ecran.travail || []).map((l) => {
     const etat = ['fait', 'en-cours', 'a-faire'].includes(l.etat) ? l.etat : 'a-faire';
     const marque = etat === 'fait' ? '✓' : '';
-    return `<li class="${etat}"><span class="st" aria-hidden="true">${marque}</span>${echapper(l.texte)}</li>`;
+    return `<li class="${etat}"><span class="st" aria-hidden="true">${marque}</span>${avecLiens(l.texte)}</li>`;
   }).join('');
   const notes = ((ecran.pourTaTache && ecran.pourTaTache.lignes) || []).map((l, i) => {
     const entete = i === 0
       ? `<div class="pense"><div class="av">C</div><div><b>Le coach</b><br>${POINTS}</div></div>`
       : '<span class="pill">Tu te souviens ?</span>';
-    return `<section class="carte">${entete}<h3>${echapper(l.label)}</h3><p>${echapper(l.valeur)}</p></section>`;
+    return `<section class="carte">${entete}<h3>${echapper(l.label)}</h3><p>${avecLiens(l.valeur)}</p></section>`;
   }).join('');
-  const gauche = `<div><span class="tag">Étape ${e} · ${echapper(NOMS_ETAPES[e])}</span><h1>${echapper(ecran.titre)}</h1><p class="lead">${echapper(ecran.explication)}</p>${chrome}<ol class="todo">${lignes}</ol>${cartes(ecran, reponses)}${cartesDe(ecran).length ? suite(ecran, reponses) : ''}</div>`;
+  const gauche = `<div><span class="tag">Étape ${e} · ${echapper(NOMS_ETAPES[e])}</span><h1>${echapper(ecran.titre)}</h1><p class="lead">${avecLiens(ecran.explication)}</p>${chrome}<ol class="todo">${lignes}</ol>${cartes(ecran, reponses)}${cartesDe(ecran).length ? suite(ecran, reponses) : ''}</div>`;
   return enveloppe(ecran, 'travail', `${haut(ecran)}${etapes(ecran)}<div class="travail">${gauche}<div class="notes">${notes}</div></div>`, reponses);
 }
 
@@ -264,7 +278,7 @@ function rendreValidee(ecran, reponses) {
     ? `<div class="ensuite">Ensuite<b>Étape ${Math.min(e + 1, 8)} · ${echapper(v.suivante)}</b></div>`
     : '';
   const bouton = reponseDe(ecran, reponses, 'continuer') ? attenteCoach() : '<button class="btn main" data-action="continuer">Continuer →</button>';
-  const corps = `${haut(ecran)}<div class="victoire"><div class="confettis" aria-hidden="true"></div><div class="badge" aria-hidden="true">✓</div><h1>${echapper(ecran.titre)}</h1><p class="lead">${echapper(ecran.explication)}</p><div class="appris">${appris}</div><div class="barre">${suivante}<div class="piste"><div class="rempli" style="--de:${de}%;--a:${a}%"></div></div>${bouton}</div></div>`;
+  const corps = `${haut(ecran)}<div class="victoire"><div class="confettis" aria-hidden="true"></div><div class="badge" aria-hidden="true">✓</div><h1>${echapper(ecran.titre)}</h1><p class="lead">${avecLiens(ecran.explication)}</p><div class="appris">${appris}</div><div class="barre">${suivante}<div class="piste"><div class="rempli" style="--de:${de}%;--a:${a}%"></div></div>${bouton}</div></div>`;
   return enveloppe(ecran, 'validee', corps, reponses);
 }
 
@@ -280,7 +294,7 @@ function rendreFin(ecran, reponses) {
   const resume = f.resume
     ? `<section class="carte sombre resume"><h2>Le résumé pour Mario</h2><pre>${echapper(f.resume)}</pre><button class="btn jaune" data-action="copier" data-texte="${echapper(f.resume)}">Copier le résumé</button></section>`
     : '';
-  const corps = `${haut(ecran)}<div class="fin"><div class="tete">${illustration('implementation')}<div><span class="tag">Parcours terminé</span><h1>${echapper(ecran.titre)}</h1><p class="lead">${echapper(ecran.explication)}</p></div></div>${construit}${appris}${resume}<div class="fin-cartes">${cartes(ecran, reponses)}${cartesDe(ecran).length ? suite(ecran, reponses) : ''}</div></div>`;
+  const corps = `${haut(ecran)}<div class="fin"><div class="tete">${illustration('implementation')}<div><span class="tag">Parcours terminé</span><h1>${echapper(ecran.titre)}</h1><p class="lead">${avecLiens(ecran.explication)}</p></div></div>${construit}${appris}${resume}<div class="fin-cartes">${cartes(ecran, reponses)}${cartesDe(ecran).length ? suite(ecran, reponses) : ''}</div></div>`;
   return enveloppe(ecran, 'fin', corps, reponses);
 }
 

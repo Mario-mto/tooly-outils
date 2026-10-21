@@ -181,3 +181,26 @@ test('doitSonner : un choix ou un texte sonne quand il complète un écran sans 
   const tout = { ...reponse(avecQuiz, 'quiz-valeur', { choix: 1, juste: true }), ...reponse(avecQuiz, 'temps', { choix: 0 }) };
   assert.equal(doitSonner(avecQuiz, tout, { type: 'carte', carte: 'temps' }), false);
 });
+
+const LIEN = 'https://chromewebstore.google.com/detail/claude/fcoeoabgfenejglbffodgkkbkcdhcgfn';
+
+test("une adresse dans l'explication devient un lien court et un bouton Copier le lien", () => {
+  const ecran = { ...ETAPE, parcours: { ...ETAPE.parcours, etape: 0 }, explication: `Installe l'extension : ${LIEN}. Puis connecte-toi.` };
+  const html = rendreEcran(ecran, {});
+  assert.ok(html.includes(`<a class="lien" href="${LIEN}" target="_blank" rel="noopener">chromewebstore.google.com</a>`), html);
+  assert.ok(html.includes(`data-action="copier" data-texte="${LIEN}">Copier le lien</button>`));
+  assert.ok(!html.includes(`${LIEN}.`), 'le point final reste hors du lien');
+});
+
+test('une adresse dans une ligne de Pour ta tâche et dans le travail devient aussi un lien', () => {
+  const ecran = { ...TRAVAIL, pourTaTache: { lignes: [{ label: 'Extension', valeur: LIEN }], verdict: null }, travail: [{ texte: `Ouvrir https://flow.zoho.com?a=1&b=2`, etat: 'en-cours' }] };
+  const html = rendreEcran(ecran, {});
+  assert.ok(html.includes(`href="${LIEN}"`));
+  assert.ok(html.includes('href="https://flow.zoho.com?a=1&amp;b=2"'));
+});
+
+test("une adresse piégée ne sort pas de l'attribut", () => {
+  const html = rendreEcran({ ...ETAPE, explication: 'Va sur https://x.com/"onmouseover="alert(1) maintenant' }, {});
+  assert.ok(!html.includes('"onmouseover="'));
+  assert.ok(!/href="[^"]*"onmouseover/.test(html));
+});
