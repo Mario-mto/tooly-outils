@@ -186,10 +186,20 @@ p { margin: 0; }
 .sombre { background: var(--sombre); color: var(--sombre-txt); grid-column: 1 / -1; }
 .resume pre { margin: 0; white-space: pre-wrap; font-family: inherit; font-size: 15px; line-height: 1.55; color: #ddd; max-height: 320px; overflow: auto; }
 .resume .btn { justify-self: start; }
+.carte.resume p { margin: 0; color: #fff; font-size: 16px; }
 .fin-cartes { grid-column: 1 / -1; display: grid; gap: 18px; }
 
 .attente { display: grid; gap: 16px; justify-items: center; text-align: center; margin-top: 12vh; }
 .attente h1 { font-size: 44px; }
+.relance { margin-top: 6vh; }
+.relance .resume { width: min(640px, 100%); text-align: left; }
+:root[data-lecture] body::after { content: "Lecture seule : tu suis ce parcours"; position: fixed; left: max(16px, env(safe-area-inset-left, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); background: var(--surface); color: var(--discret); border-radius: 999px; padding: 8px 14px; font-size: 14px; box-shadow: var(--ombre); }
+:root[data-lecture] button:not([data-action="copier"]) { pointer-events: none; opacity: .55; }
+.relance-liste { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 12px; width: min(640px, 100%); text-align: left; }
+.relance-liste li { display: flex; gap: 16px; align-items: center; background: var(--surface); border-radius: 22px; padding: 16px 20px; box-shadow: var(--ombre); }
+.relance-liste li > div { display: grid; gap: 8px; min-width: 0; }
+.relance-liste p { margin: 0; font-size: 17px; }
+.relance .rappel { font-size: 15px; color: var(--discret); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: center; }
 
 .bandeau { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 20; width: min(720px, calc(100% - 32px)); display: flex; gap: 16px; align-items: center; flex-wrap: wrap; padding: 16px 18px; background: var(--sombre); color: var(--sombre-txt); border-radius: 26px; box-shadow: 0 20px 60px rgba(0,0,0,.3); animation: monte .45s cubic-bezier(.2,.9,.3,1.2); }
 .bandeau .ico { flex: none; width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; font-family: ui-monospace, Consolas, monospace; font-weight: 700; background: var(--jaune); color: #1D2124; }
@@ -446,13 +456,17 @@ function suite(ecran, reponses) {
   return '';
 }
 
+// Une commande à taper dans la fenêtre de Claude Code, avec son bouton Copier.
+function aTaper(commande) {
+  if (!commande) return '';
+  return `<span class="a-taper"><code>${echapper(commande)}</code><button class="copier" data-action="copier" data-texte="${echapper(commande)}">Copier</button></span>`;
+}
+
 function bandeau(ecran, reponses) {
   const b = ecran.bandeau;
   if (!b || bandeauFait(ecran, reponses)) return '';
-  const aTaper = b.aTaper
-    ? `<span class="a-taper"><code>${echapper(b.aTaper)}</code><button class="copier" data-action="copier" data-texte="${echapper(b.aTaper)}">Copier</button></span>`
-    : '';
-  return `<div class="bandeau" role="region" aria-label="À faire dans Claude Code"><div class="ico" aria-hidden="true">&gt;_</div><p>${echapper(b.texte)} ${aTaper}</p><button class="ok" data-action="bandeau" data-bandeau="${echapper(b.id)}">C'est fait</button></div>`;
+  const commande = aTaper(b.aTaper);
+  return `<div class="bandeau" role="region" aria-label="À faire dans Claude Code"><div class="ico" aria-hidden="true">&gt;_</div><p>${echapper(b.texte)} ${commande}</p><button class="ok" data-action="bandeau" data-bandeau="${echapper(b.id)}">C'est fait</button></div>`;
 }
 
 function pourTaTache(ecran) {
@@ -470,6 +484,23 @@ function enveloppe(ecran, type, corps, reponses) {
 function rendreAttente() {
   const corps = `${haut(null)}<div class="attente">${illustration('formation')}<h1>Le coach prépare ton écran</h1><p class="lead">${POINTS}</p><p class="lead">Garde cette page ouverte : elle se met à jour toute seule.</p></div>`;
   return `<div class="ecran ecran-attente" data-ecran="attente" data-n="0">${corps}</div>`;
+}
+
+// Le résumé que l'employé copie et envoie lui-même à Mario (fin, pause, arrêt).
+function blocResume(texte) {
+  if (!texte) return '';
+  return `<section class="carte sombre resume"><h2>Le résumé pour Mario</h2><p>Copie-le et colle-le dans un message Cliq à Mario : c'est comme ça qu'il suit où tu en es.</p><pre>${echapper(texte)}</pre><button class="btn jaune" data-action="copier" data-texte="${echapper(texte)}">Copier le résumé</button></section>`;
+}
+
+// Le coach est coupé (/clear, relance, pause) : la page dit quoi taper, dans l'ordre. Pas de
+// Continuer ni de C'est fait : personne n'écoute avant la reprise, qui réécrit l'écran.
+const COULEURS = ['jaune', 'aqua', 'rose'];
+
+function rendreRelance(ecran, reponses) {
+  const commandes = Array.isArray(ecran.commandes) ? ecran.commandes : [];
+  const liste = commandes.map((c, i) => `<li><span class="ic ${COULEURS[i % 3]}">${i + 1}</span><div><p>${avecLiens(c.texte)}</p>${aTaper(c.aTaper)}</div></li>`).join('');
+  const corps = `${haut(ecran)}<div class="attente relance">${illustration('formation')}<span class="tag">À faire dans la fenêtre de Claude Code</span><h1>${echapper(ecran.titre)}</h1><p class="lead">${avecLiens(ecran.explication)}</p><ol class="relance-liste">${liste}</ol><p class="lead">Ta progression est sauvegardée. Garde cette page ouverte : quand le coach revient, elle reprend toute seule.</p><p class="rappel">Pour voir où tu en es à tout moment, tape ${aTaper('/coach-automatisation:progression')}</p>${blocResume(ecran.resume)}</div>`;
+  return enveloppe(ecran, 'relance', corps, reponses);
 }
 
 function rendreAccueil(ecran, reponses) {
@@ -535,9 +566,7 @@ function rendreFin(ecran, reponses) {
   const acquis = concepts.filter((c) => c.statut !== 'a-revoir').length;
   const liste = concepts.map((c) => `<span${c.statut === 'a-revoir' ? ' class="rev"' : ''}>${echapper(c.nom)}</span>`).join('');
   const appris = `<section class="carte"><h2>Ce que tu as appris</h2><div class="score"><span class="nb">${acquis}</span><span>concepts sur ${concepts.length} acquis</span></div><div class="concepts">${liste}</div></section>`;
-  const resume = f.resume
-    ? `<section class="carte sombre resume"><h2>Le résumé pour Mario</h2><pre>${echapper(f.resume)}</pre><button class="btn jaune" data-action="copier" data-texte="${echapper(f.resume)}">Copier le résumé</button></section>`
-    : '';
+  const resume = blocResume(f.resume);
   const corps = `${haut(ecran)}<div class="fin"><div class="tete">${illustration('implementation')}<div><span class="tag">Parcours terminé</span><h1>${echapper(ecran.titre)}</h1><p class="lead">${avecLiens(ecran.explication)}</p></div></div>${construit}${appris}${resume}<div class="fin-cartes">${cartes(ecran, reponses)}${cartesDe(ecran).length ? suite(ecran, reponses) : ''}</div></div>`;
   return enveloppe(ecran, 'fin', corps, reponses);
 }
@@ -548,6 +577,7 @@ const RENDUS = {
   travail: rendreTravail,
   validee: rendreValidee,
   fin: rendreFin,
+  relance: rendreRelance,
 };
 
 function rendreEcran(ecran, reponses) {
@@ -579,6 +609,7 @@ function rendreEcran(ecran, reponses) {
   let comments = null;
   let threadId = null;
   let minuterie = null;
+  let lecture = false;
 
   let actionAlerte = null;
   function alerte(texte, bouton, action) {
@@ -708,6 +739,7 @@ function rendreEcran(ecran, reponses) {
   zone.addEventListener('click', (ev) => {
     const cible = ev.target.closest('button');
     if (!cible || cible.disabled || !ecran) return;
+    if (lecture && cible.dataset.action !== 'copier') return;
     const n = nAffiche;
     if (cible.dataset.carte && cible.dataset.index !== undefined) {
       const carte = (ecran.cartes || []).find((c) => c.id === cible.dataset.carte);
@@ -735,10 +767,20 @@ function rendreEcran(ecran, reponses) {
 
   boutonAlerte.addEventListener('click', () => { cacherAlerte(); if (actionAlerte) actionAlerte(); });
 
+  // Une page partagée en lecture seule (Mario qui suit le parcours) ne peut pas écrire : elle
+  // suit les écrans, sans alerte ni clic.
+  function passerEnLecture() {
+    lecture = true;
+    document.documentElement.dataset.lecture = '1';
+    cacherAlerte();
+  }
+
   // Au chargement, on vérifie seulement que le coach écoute ; on ne le sonne pas.
   async function verifierEcoute() {
+    if (lecture) return;
     let etat = 'off';
     try { etat = comments ? await comments.canSendToClaude() : 'off'; } catch (e) { etat = 'off'; }
+    if (lecture) return;
     if (etat === 'available') cacherAlerte();
     else alerte(PLAN_B, 'Vérifier à nouveau', verifierEcoute);
   }
@@ -749,7 +791,7 @@ function rendreEcran(ecran, reponses) {
     db = await window.claude.use('db');
     if (!db) { alerte(PLAN_B); return; }
     comments = await window.claude.use('comments');
-    db.doc('page/presence').set({ ouverteLe: new Date().toISOString() }).catch(() => {});
+    db.doc('page/presence').set({ ouverteLe: new Date().toISOString() }).catch(passerEnLecture);
     try {
       const fil = await db.doc('page/fil').get();
       if (fil.exists && fil.data().threadId) threadId = fil.data().threadId;

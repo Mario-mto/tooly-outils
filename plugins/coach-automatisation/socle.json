@@ -3,66 +3,77 @@
     "id": "valeur",
     "nom": "Valeur d'une automatisation",
     "etape": 3,
-    "definition": "Une automatisation vaut le coup quand la tâche revient souvent, prend du temps ou coûte cher en cas d'erreur. On pèse ce gain contre le temps de construction et d'entretien."
+    "definition": "Une automatisation vaut le coup quand la tâche revient souvent, prend du temps ou coûte cher en cas d'erreur. On pèse ce gain contre le temps de construction et d'entretien.",
+    "image": "Un lave-vaisselle vaut le coup si tu fais la vaisselle tous les soirs, pas si tu reçois deux fois par an. On compare le temps gagné avec le prix de la machine, son installation et son entretien."
   },
   {
     "id": "quand-ne-pas-automatiser",
     "nom": "Quand ne pas automatiser",
     "etape": 3,
-    "definition": "Une tâche rare, rapide ou sans déclencheur naturel ne mérite pas d'automatisation. Renoncer est alors la bonne décision, pas un échec."
+    "definition": "Une tâche rare, rapide ou sans déclencheur naturel ne mérite pas d'automatisation. Renoncer est alors la bonne décision, pas un échec.",
+    "image": "On n'achète pas une souffleuse à neige pour dégager une seule entrée par hiver : la pelle suffit. Pour une tâche rare ou rapide, garder la pelle est le bon choix."
   },
   {
     "id": "decoupage",
     "nom": "Découpage en étapes",
     "etape": 4,
-    "definition": "On découpe la tâche en petites étapes successives, chacune avec un rôle clair. Un workflow bien découpé se construit, se teste et se répare étape par étape."
+    "definition": "On découpe la tâche en petites étapes successives, chacune avec un rôle clair. Un workflow bien découpé se construit, se teste et se répare étape par étape.",
+    "image": "Une recette ne dit pas « fais un gâteau » : elle donne les étapes une par une. Si le gâteau rate, on sait à quelle étape regarder."
   },
   {
     "id": "entrees-sorties",
     "nom": "Entrées et sorties",
     "etape": 4,
-    "definition": "Chaque étape reçoit quelque chose (une fiche, un fichier, un courriel) et produit quelque chose. Nommer ces entrées et sorties montre ce qui circule et où ça peut casser."
+    "definition": "Chaque étape reçoit quelque chose (une fiche, un fichier, un courriel) et produit quelque chose. Nommer ces entrées et sorties montre ce qui circule et où ça peut casser.",
+    "image": "Dans une recette, chaque étape prend quelque chose et rend autre chose : la farine et les œufs entrent, la pâte sort. Si la pâte est ratée, on regarde d'abord ce qui est entré."
   },
   {
     "id": "declencheur",
     "nom": "Déclencheur",
     "etape": 4,
-    "definition": "Le déclencheur est ce qui lance l'automatisation sans intervention humaine : un événement (une fiche change, un courriel arrive) ou une heure fixe. Sans déclencheur, ce n'est pas une automatisation."
+    "definition": "Le déclencheur est ce qui lance l'automatisation sans intervention humaine : un événement (une fiche change, un courriel arrive) ou une heure fixe. Sans déclencheur, ce n'est pas une automatisation.",
+    "image": "Un réveille-matin sonne tout seul à 7 h, une sonnette sonne quand quelqu'un appuie. Sans réveil ni sonnette, il faut que quelqu'un pense à le faire : ce n'est plus automatique."
   },
   {
     "id": "choisir-forme",
     "nom": "Choisir la forme",
     "etape": 5,
-    "definition": "La forme dit où et comment l'automatisation tourne : routine Claude planifiée, flux Zoho, Deluge, tâche planifiée sur le poste ou mini-appli. On choisit la plus simple qui fait le travail de façon fiable."
+    "definition": "La forme dit où et comment l'automatisation tourne : routine Claude planifiée, flux Zoho, Deluge, tâche planifiée sur le poste ou mini-appli. On choisit la plus simple qui fait le travail de façon fiable.",
+    "image": "Pour accrocher un cadre, on prend un marteau, pas une perceuse à percussion. On choisit l'outil le plus simple qui fait le travail sans faillir."
   },
   {
     "id": "agent-ou-automatisation",
     "nom": "Agent ou automatisation",
     "etape": 5,
-    "definition": "Une règle simple et fixe se confie à une automatisation classique, sans IA. Un agent n'est utile que quand il faut juger, rédiger ou s'adapter à des cas variés."
+    "definition": "Une règle simple et fixe se confie à une automatisation classique, sans IA. Un agent n'est utile que quand il faut juger, rédiger ou s'adapter à des cas variés.",
+    "image": "Une minuterie allume la lumière à 18 h sans réfléchir. Un gardien de maison, lui, décide quoi faire si un tuyau fuit. On ne paie un gardien que si quelque chose demande du jugement."
   },
   {
     "id": "acces-secrets",
     "nom": "Accès et secrets",
     "etape": 6,
-    "definition": "L'automatisation agit avec tes accès personnels : elle doit n'en utiliser que le strict nécessaire. Une clé ou un mot de passe ne s'écrit jamais en clair dans un fichier."
+    "definition": "L'automatisation agit avec tes accès personnels : elle doit n'en utiliser que le strict nécessaire. Une clé ou un mot de passe ne s'écrit jamais en clair dans un fichier.",
+    "image": "Pour arroser tes plantes, la voisine a besoin de la clé de la porte d'entrée, pas de tout ton trousseau. Et on ne laisse jamais la clé sous le paillasson."
   },
   {
     "id": "demo-avant-reel",
     "nom": "Données de démo avant données réelles",
     "etape": 7,
-    "definition": "On teste d'abord sur des données fabriquées et marquées « TEST », qu'on supprime ensuite. Une erreur ne touche alors aucune vraie donnée."
+    "definition": "On teste d'abord sur des données fabriquées et marquées « TEST », qu'on supprime ensuite. Une erreur ne touche alors aucune vraie donnée.",
+    "image": "Une répétition générale se fait avant le spectacle, devant une salle vide : on peut se tromper sans conséquence."
   },
   {
     "id": "tester-cas-reel",
     "nom": "Tester sur un cas réel",
     "etape": 7,
-    "definition": "Après la démo, on vérifie sur un vrai cas, avec ton accord explicite avant tout envoi, toute écriture ou toute suppression. C'est ce test qui prouve que l'automatisation sert vraiment."
+    "definition": "Après la démo, on vérifie sur un vrai cas, avec ton accord explicite avant tout envoi, toute écriture ou toute suppression. C'est ce test qui prouve que l'automatisation sert vraiment.",
+    "image": "Après la répétition, la première vraie représentation dit si le spectacle tient devant le public. On prévient les acteurs avant de lever le rideau."
   },
   {
     "id": "documenter",
     "nom": "Documenter",
     "etape": 8,
-    "definition": "Une fiche dit ce que fait l'automatisation, ce qui la déclenche, les accès utilisés, où elle tourne et quoi faire si elle casse. Sans fiche, personne d'autre ne peut la reprendre ni la réparer."
+    "definition": "Une fiche dit ce que fait l'automatisation, ce qui la déclenche, les accès utilisés, où elle tourne et quoi faire si elle casse. Sans fiche, personne d'autre ne peut la reprendre ni la réparer.",
+    "image": "Quand tu pars en voyage, tu laisses une note à la gardienne : quand nourrir le chat, où sont les croquettes, qui appeler si ça ne va pas. Sans note, personne ne peut prendre le relais."
   }
 ]

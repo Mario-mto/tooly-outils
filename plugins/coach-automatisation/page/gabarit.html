@@ -186,10 +186,20 @@ p { margin: 0; }
 .sombre { background: var(--sombre); color: var(--sombre-txt); grid-column: 1 / -1; }
 .resume pre { margin: 0; white-space: pre-wrap; font-family: inherit; font-size: 15px; line-height: 1.55; color: #ddd; max-height: 320px; overflow: auto; }
 .resume .btn { justify-self: start; }
+.carte.resume p { margin: 0; color: #fff; font-size: 16px; }
 .fin-cartes { grid-column: 1 / -1; display: grid; gap: 18px; }
 
 .attente { display: grid; gap: 16px; justify-items: center; text-align: center; margin-top: 12vh; }
 .attente h1 { font-size: 44px; }
+.relance { margin-top: 6vh; }
+.relance .resume { width: min(640px, 100%); text-align: left; }
+:root[data-lecture] body::after { content: "Lecture seule : tu suis ce parcours"; position: fixed; left: max(16px, env(safe-area-inset-left, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); background: var(--surface); color: var(--discret); border-radius: 999px; padding: 8px 14px; font-size: 14px; box-shadow: var(--ombre); }
+:root[data-lecture] button:not([data-action="copier"]) { pointer-events: none; opacity: .55; }
+.relance-liste { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 12px; width: min(640px, 100%); text-align: left; }
+.relance-liste li { display: flex; gap: 16px; align-items: center; background: var(--surface); border-radius: 22px; padding: 16px 20px; box-shadow: var(--ombre); }
+.relance-liste li > div { display: grid; gap: 8px; min-width: 0; }
+.relance-liste p { margin: 0; font-size: 17px; }
+.relance .rappel { font-size: 15px; color: var(--discret); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: center; }
 
 .bandeau { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 20; width: min(720px, calc(100% - 32px)); display: flex; gap: 16px; align-items: center; flex-wrap: wrap; padding: 16px 18px; background: var(--sombre); color: var(--sombre-txt); border-radius: 26px; box-shadow: 0 20px 60px rgba(0,0,0,.3); animation: monte .45s cubic-bezier(.2,.9,.3,1.2); }
 .bandeau .ico { flex: none; width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; font-family: ui-monospace, Consolas, monospace; font-weight: 700; background: var(--jaune); color: #1D2124; }
@@ -266,6 +276,7 @@ p { margin: 0; }
   let comments = null;
   let threadId = null;
   let minuterie = null;
+  let lecture = false;
 
   let actionAlerte = null;
   function alerte(texte, bouton, action) {
@@ -395,6 +406,7 @@ p { margin: 0; }
   zone.addEventListener('click', (ev) => {
     const cible = ev.target.closest('button');
     if (!cible || cible.disabled || !ecran) return;
+    if (lecture && cible.dataset.action !== 'copier') return;
     const n = nAffiche;
     if (cible.dataset.carte && cible.dataset.index !== undefined) {
       const carte = (ecran.cartes || []).find((c) => c.id === cible.dataset.carte);
@@ -422,10 +434,20 @@ p { margin: 0; }
 
   boutonAlerte.addEventListener('click', () => { cacherAlerte(); if (actionAlerte) actionAlerte(); });
 
+  // Une page partagée en lecture seule (Mario qui suit le parcours) ne peut pas écrire : elle
+  // suit les écrans, sans alerte ni clic.
+  function passerEnLecture() {
+    lecture = true;
+    document.documentElement.dataset.lecture = '1';
+    cacherAlerte();
+  }
+
   // Au chargement, on vérifie seulement que le coach écoute ; on ne le sonne pas.
   async function verifierEcoute() {
+    if (lecture) return;
     let etat = 'off';
     try { etat = comments ? await comments.canSendToClaude() : 'off'; } catch (e) { etat = 'off'; }
+    if (lecture) return;
     if (etat === 'available') cacherAlerte();
     else alerte(PLAN_B, 'Vérifier à nouveau', verifierEcoute);
   }
@@ -436,7 +458,7 @@ p { margin: 0; }
     db = await window.claude.use('db');
     if (!db) { alerte(PLAN_B); return; }
     comments = await window.claude.use('comments');
-    db.doc('page/presence').set({ ouverteLe: new Date().toISOString() }).catch(() => {});
+    db.doc('page/presence').set({ ouverteLe: new Date().toISOString() }).catch(passerEnLecture);
     try {
       const fil = await db.doc('page/fil').get();
       if (fil.exists && fil.data().threadId) threadId = fil.data().threadId;

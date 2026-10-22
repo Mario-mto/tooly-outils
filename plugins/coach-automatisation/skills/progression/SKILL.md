@@ -57,7 +57,7 @@ Termine par une seule suite possible : reprendre avec le skill coach.
 ## Résumé pour Mario
 
 Si on te demande le résumé pour Mario (ou pour le manager), lance `resume` et rends son Markdown
-tel quel, sans l'enjoliver :
+tel quel, sans l'enjoliver, puis dis-lui de le copier dans un message Cliq à Mario :
 
 ```
 node "${CLAUDE_PLUGIN_ROOT}/scripts/progression.mjs" resume

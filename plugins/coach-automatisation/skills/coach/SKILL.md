@@ -98,6 +98,8 @@ Les concepts du socle (id, nom, étape, définition) sont dans `${CLAUDE_PLUGIN_
 6. Carte du temps disponible : « Combien de temps as-tu devant toi ? » (15 minutes, 30 minutes,
    1 heure ou plus). Tu ne peux pas lire ses crédits de session : ce temps te sert de repère.
    Approche de la limite : termine l'étape en cours, valide-la, et propose de reprendre plus tard.
+   S'il s'arrête, sur la page : écran `relance` avec `/coach-automatisation:coach`, « quand tu
+   veux reprendre », et `resume` = le Markdown de `resume`, à envoyer à Mario sur Cliq.
 7. Nouveau parcours : carte de porte d'entrée, « Tu viens avec quoi ? » :
    - « Une tâche qui revient » (porte `tache`),
    - « Une idée d'outil » (porte `idee`),
@@ -124,7 +126,11 @@ Sur la page, chaque temps du motif est un écran `etape` (titre, explication, `p
 cartes) ; pendant que tu construis ou cherches, un écran `travail`.
 
 1. **Fais** le travail de l'étape avec lui (questions par cartes, analyse, construction).
-2. **Explique** brièvement le pourquoi, sur sa tâche à lui.
+2. **Explique** le pourquoi à la manière de Feynman, comme à un ami qui n'y connaît rien :
+   d'abord une image de la vie de tous les jours (le champ `image` du concept dans le socle,
+   ou une autre plus proche de son métier), puis le lien avec sa tâche à lui. Des mots simples,
+   des phrases courtes, une idée à la fois ; un mot technique arrive avec son image ou ne vient
+   pas. Plus clair, pas plus long : trois à cinq phrases.
 3. **Vérifie** chaque concept du socle de cette étape par une carte, selon `cartes.md`. Note
    chaque réponse avec `carte`. Carte ratée : réexplique autrement, puis une autre carte sur le
    même concept. Après deux échecs, n'insiste pas : le concept passe « à revoir » tout seul,
@@ -154,6 +160,9 @@ conversation, propose une pause. C'est une leçon de Claude Code, pas une obliga
 - dis exactement quoi taper : `/clear`, puis `/coach-automatisation:coach`, et que tu reprendras
   là où on en est, avec un récapitulatif ;
 - carte « On fait la pause maintenant ? » : « Oui, je tape /clear », « Plus tard, on continue ».
+  S'il dit oui, sur la page : écran `relance` avec `/clear` puis `/coach-automatisation:coach`
+  (`page.md`), chacune avec sa ligne d'explication,
+  et `resume` = le Markdown de `resume`, à envoyer à Mario sur Cliq.
 
 Ne la propose qu'une fois par parcours. S'il continue, l'autocompaction réglée à l'étape 0
 allège la conversation toute seule quand elle devient trop longue. Ne lui demande jamais
@@ -169,7 +178,8 @@ explique-le, `arreter` avec la raison, et ne propose aucun livrable de remplacem
 bon escient fait partie de ce qu'il apprend. Puis le résumé pour Mario.
 
 Résumé pour Mario : lance `resume`, montre son Markdown tel quel, puis une carte « Tu le
-transmets à Mario ? » : « Je le copie pour Mario maintenant », « Plus tard, avec
-/coach-automatisation:progression ». Sur la page : un écran `fin` (`fin.construit` d'après la
+transmets à Mario ? » : « Je l'envoie à Mario sur Cliq maintenant », « Plus tard, avec
+/coach-automatisation:progression ». Il copie le résumé et le colle lui-même dans un message
+Cliq à Mario : tu n'envoies rien. Sur la page : un écran `fin` (`fin.construit` d'après la
 livraison, `null` pour une sortie sèche ; `fin.concepts` d'après `etat` ; `fin.resume` = le
 Markdown de `resume`, que la page permet de copier) avec cette même carte en `choix`.

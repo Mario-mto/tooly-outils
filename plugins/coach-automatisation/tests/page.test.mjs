@@ -63,3 +63,10 @@ test('le délai de silence laisse au coach au moins 4 minutes', () => {
   assert.ok(m, 'DELAI_SILENCE introuvable');
   assert.ok(Number(m[1]) >= 240000, `délai trop court : ${m[1]}`);
 });
+
+test('une page partagée en lecture seule suit le parcours sans alerte ni clic', () => {
+  const html = lire();
+  assert.ok(html.includes('dataset.lecture'), 'mode lecture détecté');
+  assert.ok(html.includes('Lecture seule'), 'mode lecture visible');
+  assert.match(html, /if \(lecture\) return;/, 'ni clic ni vérification du coach en lecture');
+});

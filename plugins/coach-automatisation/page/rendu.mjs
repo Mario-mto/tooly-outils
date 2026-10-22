@@ -202,13 +202,17 @@ function suite(ecran, reponses) {
   return '';
 }
 
+// Une commande à taper dans la fenêtre de Claude Code, avec son bouton Copier.
+function aTaper(commande) {
+  if (!commande) return '';
+  return `<span class="a-taper"><code>${echapper(commande)}</code><button class="copier" data-action="copier" data-texte="${echapper(commande)}">Copier</button></span>`;
+}
+
 function bandeau(ecran, reponses) {
   const b = ecran.bandeau;
   if (!b || bandeauFait(ecran, reponses)) return '';
-  const aTaper = b.aTaper
-    ? `<span class="a-taper"><code>${echapper(b.aTaper)}</code><button class="copier" data-action="copier" data-texte="${echapper(b.aTaper)}">Copier</button></span>`
-    : '';
-  return `<div class="bandeau" role="region" aria-label="À faire dans Claude Code"><div class="ico" aria-hidden="true">&gt;_</div><p>${echapper(b.texte)} ${aTaper}</p><button class="ok" data-action="bandeau" data-bandeau="${echapper(b.id)}">C'est fait</button></div>`;
+  const commande = aTaper(b.aTaper);
+  return `<div class="bandeau" role="region" aria-label="À faire dans Claude Code"><div class="ico" aria-hidden="true">&gt;_</div><p>${echapper(b.texte)} ${commande}</p><button class="ok" data-action="bandeau" data-bandeau="${echapper(b.id)}">C'est fait</button></div>`;
 }
 
 function pourTaTache(ecran) {
@@ -226,6 +230,23 @@ function enveloppe(ecran, type, corps, reponses) {
 function rendreAttente() {
   const corps = `${haut(null)}<div class="attente">${illustration('formation')}<h1>Le coach prépare ton écran</h1><p class="lead">${POINTS}</p><p class="lead">Garde cette page ouverte : elle se met à jour toute seule.</p></div>`;
   return `<div class="ecran ecran-attente" data-ecran="attente" data-n="0">${corps}</div>`;
+}
+
+// Le résumé que l'employé copie et envoie lui-même à Mario (fin, pause, arrêt).
+function blocResume(texte) {
+  if (!texte) return '';
+  return `<section class="carte sombre resume"><h2>Le résumé pour Mario</h2><p>Copie-le et colle-le dans un message Cliq à Mario : c'est comme ça qu'il suit où tu en es.</p><pre>${echapper(texte)}</pre><button class="btn jaune" data-action="copier" data-texte="${echapper(texte)}">Copier le résumé</button></section>`;
+}
+
+// Le coach est coupé (/clear, relance, pause) : la page dit quoi taper, dans l'ordre. Pas de
+// Continuer ni de C'est fait : personne n'écoute avant la reprise, qui réécrit l'écran.
+const COULEURS = ['jaune', 'aqua', 'rose'];
+
+function rendreRelance(ecran, reponses) {
+  const commandes = Array.isArray(ecran.commandes) ? ecran.commandes : [];
+  const liste = commandes.map((c, i) => `<li><span class="ic ${COULEURS[i % 3]}">${i + 1}</span><div><p>${avecLiens(c.texte)}</p>${aTaper(c.aTaper)}</div></li>`).join('');
+  const corps = `${haut(ecran)}<div class="attente relance">${illustration('formation')}<span class="tag">À faire dans la fenêtre de Claude Code</span><h1>${echapper(ecran.titre)}</h1><p class="lead">${avecLiens(ecran.explication)}</p><ol class="relance-liste">${liste}</ol><p class="lead">Ta progression est sauvegardée. Garde cette page ouverte : quand le coach revient, elle reprend toute seule.</p><p class="rappel">Pour voir où tu en es à tout moment, tape ${aTaper('/coach-automatisation:progression')}</p>${blocResume(ecran.resume)}</div>`;
+  return enveloppe(ecran, 'relance', corps, reponses);
 }
 
 function rendreAccueil(ecran, reponses) {
@@ -291,9 +312,7 @@ function rendreFin(ecran, reponses) {
   const acquis = concepts.filter((c) => c.statut !== 'a-revoir').length;
   const liste = concepts.map((c) => `<span${c.statut === 'a-revoir' ? ' class="rev"' : ''}>${echapper(c.nom)}</span>`).join('');
   const appris = `<section class="carte"><h2>Ce que tu as appris</h2><div class="score"><span class="nb">${acquis}</span><span>concepts sur ${concepts.length} acquis</span></div><div class="concepts">${liste}</div></section>`;
-  const resume = f.resume
-    ? `<section class="carte sombre resume"><h2>Le résumé pour Mario</h2><pre>${echapper(f.resume)}</pre><button class="btn jaune" data-action="copier" data-texte="${echapper(f.resume)}">Copier le résumé</button></section>`
-    : '';
+  const resume = blocResume(f.resume);
   const corps = `${haut(ecran)}<div class="fin"><div class="tete">${illustration('implementation')}<div><span class="tag">Parcours terminé</span><h1>${echapper(ecran.titre)}</h1><p class="lead">${avecLiens(ecran.explication)}</p></div></div>${construit}${appris}${resume}<div class="fin-cartes">${cartes(ecran, reponses)}${cartesDe(ecran).length ? suite(ecran, reponses) : ''}</div></div>`;
   return enveloppe(ecran, 'fin', corps, reponses);
 }
@@ -304,6 +323,7 @@ const RENDUS = {
   travail: rendreTravail,
   validee: rendreValidee,
   fin: rendreFin,
+  relance: rendreRelance,
 };
 
 export function rendreEcran(ecran, reponses) {

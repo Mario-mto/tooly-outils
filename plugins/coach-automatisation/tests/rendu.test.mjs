@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { rendreEcran, echapper, doitSonner, NOMS_ETAPES } from '../page/rendu.mjs';
-import { ACCUEIL, ETAPE, TRAVAIL, BANDEAU, VALIDEE, FIN, ATTENTE, QUIZ, CHOIX, TEXTE } from './ecrans-exemples.mjs';
+import { ACCUEIL, ETAPE, TRAVAIL, BANDEAU, VALIDEE, FIN, ATTENTE, RELANCE, QUIZ, CHOIX, TEXTE } from './ecrans-exemples.mjs';
 
 const TIRET_LONG = '\u2014';
 const compter = (texte, motif) => texte.split(motif).length - 1;
@@ -150,7 +150,7 @@ test('un texte du coach avec balise n\'est jamais interprété', () => {
 
 test('aucun rendu ne contient de tiret long, même si le coach en écrit un', () => {
   const piege = { ...ETAPE, explication: `Avant ${TIRET_LONG} après` };
-  for (const ecran of [ACCUEIL, ETAPE, TRAVAIL, BANDEAU, VALIDEE, FIN, ATTENTE, piege]) {
+  for (const ecran of [ACCUEIL, ETAPE, TRAVAIL, BANDEAU, VALIDEE, FIN, ATTENTE, RELANCE, piege]) {
     assert.ok(!rendreEcran(ecran, {}).includes(TIRET_LONG), `écran ${ecran.type}`);
   }
 });
@@ -203,4 +203,35 @@ test("une adresse piégée ne sort pas de l'attribut", () => {
   const html = rendreEcran({ ...ETAPE, explication: 'Va sur https://x.com/"onmouseover="alert(1) maintenant' }, {});
   assert.ok(!html.includes('"onmouseover="'));
   assert.ok(!/href="[^"]*"onmouseover/.test(html));
+});
+
+test("l'écran relance numérote les commandes à taper dans Claude Code, chacune avec Copier", () => {
+  const html = rendreEcran(RELANCE, {});
+  assert.match(html, /data-ecran="relance"/);
+  assert.ok(html.includes(echapper(RELANCE.titre)));
+  assert.ok(html.indexOf('data-texte="/clear"') < html.indexOf('data-texte="/coach-automatisation:coach"'), 'ordre des commandes');
+  assert.ok(html.includes('Relance le coach : il reprend où tu en étais.'.replace(/'/g, '&#39;')));
+  assert.ok(html.includes('fenêtre de Claude Code'), 'dit où taper');
+  assert.ok(html.includes('data-texte="/coach-automatisation:progression"'), 'commande de progression toujours rappelée');
+  assert.ok(html.includes('Ta progression est sauvegardée'));
+  assert.ok(!html.includes('data-action="continuer"'), 'pas de Continuer : le coach est coupé');
+  assert.ok(!html.includes('data-action="bandeau"'), "pas de C'est fait non plus");
+});
+
+test("l'écran relance échappe les commandes et tolère une liste absente", () => {
+  const html = rendreEcran({ ...RELANCE, commandes: [{ aTaper: '<b>x</b>', texte: '"y"' }] }, {});
+  assert.ok(!html.includes('<b>x</b>'));
+  assert.match(rendreEcran({ ...RELANCE, commandes: null }, {}), /data-ecran="relance"/);
+});
+
+test('le résumé pour Mario dit de le coller dans un message Cliq, à la fin comme à la pause', () => {
+  const fin = rendreEcran(FIN, {});
+  assert.ok(fin.includes('message Cliq à Mario'));
+  assert.ok(fin.includes('Copier le résumé'));
+  const pause = rendreEcran({ ...RELANCE, resume: 'Parcours : <b>test</b>' }, {});
+  assert.ok(pause.includes('Le résumé pour Mario'));
+  assert.ok(pause.includes('message Cliq à Mario'));
+  assert.ok(pause.includes('data-texte="Parcours : &lt;b&gt;test&lt;/b&gt;"'));
+  assert.ok(!rendreEcran(RELANCE, {}).includes('Le résumé pour Mario'));
+  assert.ok(!rendreEcran({ ...RELANCE, resume: null }, {}).includes('Le résumé pour Mario'));
 });

@@ -1,6 +1,6 @@
 {
   "name": "coach-automatisation",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Coach qui t'accompagne étape par étape pour transformer une tâche répétitive en automatisation avec déclencheur, en t'apprenant le pourquoi de chaque choix.",
   "author": {
     "name": "Tooly"

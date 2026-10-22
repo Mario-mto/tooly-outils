@@ -157,7 +157,7 @@ export const FIN = {
     type: 'choix',
     question: 'Le résumé pour Mario',
     options: [
-      { texte: 'Je le copie pour Mario maintenant', bonne: false },
+      { texte: "Je l'envoie à Mario sur Cliq maintenant", bonne: false },
       { texte: 'Plus tard', bonne: false },
     ],
     expliqueBonne: null,
@@ -182,3 +182,15 @@ export const FIN = {
 };
 
 export const ATTENTE = { n: 0, type: 'attente' };
+
+export const RELANCE = {
+  n: 13,
+  type: 'relance',
+  parcours: { titre: PARCOURS.titre, etape: 5 },
+  titre: 'On fait la pause',
+  explication: 'La conversation est longue : on la vide pour que je reste précis. Rien ne se perd.',
+  commandes: [
+    { aTaper: '/clear', texte: 'Vide la conversation.' },
+    { aTaper: '/coach-automatisation:coach', texte: 'Relance le coach : il reprend où tu en étais.' },
+  ],
+};

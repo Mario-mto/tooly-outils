@@ -40,8 +40,8 @@ pas ce qui est déjà en place : reprends au point suivant.
      maintenant et aux prochaines fois (sans Chrome, il saute cette commande) ;
    - `/coach-automatisation:coach` : tu reprends ici, rien n'est perdu. Pas de bandeau pour la
      relance (un « C'est fait » sonnerait pendant que tu es coupé) : écris d'abord
-     l'écran `attente`, puis dis-le dans la fenêtre de Claude Code ; à la reprise, suis
-     « Reprendre » de `page.md`.
+     l'écran `relance` avec cette commande, puis dis-le dans la fenêtre de Claude Code ; à la
+     reprise, suis « Reprendre » de `page.md`.
    Termine ton message là : il a la main pour taper.
 5. **Se connecter à ses outils.** Après la relance, vérifie Chrome avec `tabs_context_mcp`.
    Ouvre un onglet sur l'outil dont son parcours aura besoin (Zoho : https://accounts.zoho.com,

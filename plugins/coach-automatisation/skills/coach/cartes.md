@@ -23,8 +23,8 @@ c'est le moment où il prouve qu'il saurait refaire le choix seul.
 
 - **Réussie** : confirme en une phrase et ajoute le pourquoi en une phrase. Puis
   `carte --resultat reussi`.
-- **Ratée** : sans jugement, explique pourquoi l'autre réponse est la bonne, avec une autre image
-  ou un autre angle que la première fois. Puis `carte --resultat rate`.
+- **Ratée** : sans jugement, explique pourquoi l'autre réponse est la bonne, avec une autre
+  image du quotidien que la première fois, puis son lien avec sa tâche. Puis `carte --resultat rate`.
 - **Deuxième essai** : une nouvelle carte sur le même concept, formulée autrement (autre
   situation de sa tâche, autres options). Jamais la même carte reposée.
 - **Deuxième échec** : explique une dernière fois, note `rate`, dis-lui que ce concept est noté

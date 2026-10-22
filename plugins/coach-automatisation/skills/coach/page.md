@@ -21,6 +21,11 @@ dans la base et la page te prévient par un commentaire.
    son accord pour qu'elle t'écrive ; il accepte.
 6. `ArtifactData` `get` `page`/`presence`. Présent : la page est vivante, passe par elle. Absent
    ou « Je préfère rester ici » : plan B.
+7. Page vivante : un écran `etape` (étape 0, titre « Mario suit ton parcours », sans cartes)
+   avec le `bandeau` `partage`, `aTaper` `null`, texte : « Partage ta page avec Mario : bouton
+   Partager en haut à droite, écris Mario dans « Ajouter des personnes », choisis-le et laisse-lui
+   seulement la lecture. Il verra où tu en es, sans rien pouvoir changer. » Son « C'est fait »
+   te réveille : passe à l'accroche. Ne le redemande pas à la reprise, le partage reste.
 
 ## Reprendre (nouvelle session, relance, `/clear`)
 
@@ -38,7 +43,7 @@ Un écran = un document `coach/ecran` écrit en entier (`set`), avec `n` augment
 avec une ligne dans la fenêtre (« C'est sur ta page. ») : sa réponse te réveillera.
 
 ```
-{ n, type: "accueil" | "etape" | "travail" | "validee" | "fin",
+{ n, type: "accueil" | "etape" | "travail" | "validee" | "fin" | "relance",
   parcours: { titre, etape: 0 à 8 },
   titre, explication,
   pourTaTache: { lignes: [{ label, valeur }], verdict } | null,
@@ -47,17 +52,27 @@ avec une ligne dans la fenêtre (« C'est sur ta page. ») : sa réponse te rév
   travail: [{ texte, etat: "fait" | "en-cours" | "a-faire" }],
   bandeau: { id, texte, aTaper } | null,
   validee: { concepts: [{ nom, definition, statut }], suivante } | null,
-  fin: { construit: [{ label, valeur }] | null, concepts: [{ nom, statut }], resume } | null }
+  fin: { construit: [{ label, valeur }] | null, concepts: [{ nom, statut }], resume } | null,
+  commandes: [{ aTaper, texte }], resume: "<Markdown>" | null }
 ```
 
 - Ids des cartes et des bandeaux : minuscules, chiffres et `-` seulement (`temps`, `quiz-valeur`).
-- `explication` : ce que tu aurais écrit dans la fenêtre, en un paragraphe court.
+- `explication` : ce que tu aurais écrit dans la fenêtre, en un paragraphe court. Quand elle
+  explique un concept, elle commence par l'image du quotidien (SKILL, motif, point 2), puis sa
+  tâche.
 - Quiz (`cartes.md`) : `bonne: true` sur une seule option, `expliqueBonne` et `expliqueFausse`
   écrites d'avance. La page corrige seule, sans t'attendre.
 - Choix : la recommandée en premier (`bonne` à `false` partout). Texte : `options` vide.
 - `bandeau` : ce qu'il doit faire dans la fenêtre de Claude Code (`aTaper` : la commande exacte,
   ou `null`). Il clique « C'est fait » quand c'est fait. Un écran à bandeau n'a pas de cartes :
   une seule raison de te réveiller.
+- `relance` : l'écran à écrire juste avant qu'il te coupe (`/clear`, relance du coach, arrêt
+  pour reprendre plus tard). `commandes` dans l'ordre : la commande exacte et une ligne qui dit
+  ce qu'elle fait. La page ajoute seule la commande de progression et dit que tout est
+  sauvegardé. Ni cartes ni bandeau : personne ne t'écoute avant la reprise. Écris-le, redis les
+  commandes en une ligne dans la fenêtre, puis termine ton tour. `resume` : pour une pause ou
+  un arrêt, le Markdown de `progression.mjs resume`, que la page fait copier pour Mario ; `null`
+  pour la relance de l'étape 0.
 - `travail` (écran `travail`) : la liste de ce que tu fais ; à chaque action finie, `update` de
   `travail` avec la ligne passée à `fait` et la suivante à `en-cours`. Dans `pourTaTache.lignes`,
   le pourquoi de ce que tu fais et un rappel de concept (affichés à côté).
