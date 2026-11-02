@@ -219,6 +219,14 @@ test("Artifact : lecture de la page connue approuvée, suppression et autre page
   assert.equal(outil('Artifact', { action: 'list' }), null);
 });
 
+test("les deux formes d'adresse désignent la même page", () => {
+  // Non-régression : la forme que Chrome affiche après redirection (id court suivi de ?sk=...)
+  // reste la page rangée.
+  accepte(outil('Artifact', { action: 'read', url: `${URL_PAGE}?sk=xyz` }));
+  // La forme longue code/artifact/<uuid> ne se déduit pas de l'id court : non rangée, donc refusée.
+  assert.equal(outil('Artifact', { action: 'read', url: 'https://claude.ai/code/artifact/d5c23e05-a029-4075-a7ab-7267c588011b' }), null);
+});
+
 test("ArtifactData sur l'adresse rangée approuvé, même une suppression de document", () => {
   accepte(outil('ArtifactData', { action: 'set', url: URL_PAGE, collection: 'coach', doc_id: 'ecran', data: { n: 1 } }));
   accepte(outil('ArtifactData', { action: 'query', url: `${URL_PAGE}?sk=abc`, collection: 'reponses' }));

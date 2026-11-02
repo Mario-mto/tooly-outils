@@ -43,6 +43,12 @@ test('la page respecte le mouvement réduit et définit un thème sombre', () =>
   assert.ok(html.includes(':root[data-theme="dark"]'));
 });
 
+test('la page prévient le coach par une ligne lisible', () => {
+  const html = lire();
+  assert.ok(html.includes('Page du coach : réponse envoyée (écran'));
+  assert.ok(!html.includes("Réponse de l'écran"));
+});
+
 test('la page s\'abonne à la base et sonne le coach', () => {
   const html = lire();
   assert.ok(html.includes('onSnapshot'));

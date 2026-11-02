@@ -11,14 +11,19 @@ dans la base et la page te prévient par un commentaire.
    n'existe pas encore) : copie la page et rend `{ "fichier": ... }`.
 2. Dis-lui en une phrase que tu crées sa page (`permissions.md`), puis outil `Artifact` : `file_path` =
    ce fichier, `capabilities` = `{"db": {}, "comments": {}}`, `icon` = `coach`, `description` =
-   « Ton parcours avec le coach d'automatisation ». Note l'URL rendue.
+   « Ton parcours avec le coach d'automatisation ». Note l'URL rendue : elle a la forme `https://claude.ai/artifact/...`. C'est la seule forme
+   d'adresse que tu utilises, pour l'employé, pour `progression.mjs adresse` et pour tous les
+   `read`. Si l'employé te colle une adresse `claude.ai/code/artifact/...`, c'est la même page :
+   garde celle que tu as rangée.
 3. Dès que `nouveau` a créé le parcours : `progression.mjs adresse --id <id> --url <URL>`.
 4. Écris l'écran d'attente : `ArtifactData` `set`, `collection` `coach`, `doc_id` `ecran`,
    `data` `{"n": 1, "type": "attente"}`.
 5. Dans la fenêtre de Claude Code, une ligne : « Ouvre ta page dans Chrome : <URL>. Garde-la
    ouverte, tout se passe là. » Puis une carte « Ta page est ouverte ? » (« Oui, je la vois »,
    « Je préfère rester ici »). Préviens-le : au premier clic dans la page, claude.ai lui demande
-   son accord pour qu'elle t'écrive ; il accepte.
+   son accord pour qu'elle t'écrive ; il accepte. Préviens-le aussi : à chaque clic, des messages
+   « Page du coach : réponse envoyée » vont apparaître dans la conversation, c'est normal ; tu
+   réponds sur la page, pas dans la conversation.
 6. `ArtifactData` `get` `page`/`presence`. Présent : la page est vivante, passe par elle. Absent
    ou « Je préfère rester ici » : plan B.
 7. Page vivante : un écran `etape` (étape 0, titre « Mario suit ton parcours », sans cartes)
@@ -33,7 +38,7 @@ La surveillance de la page ne survit pas à la session. À chaque démarrage sur
 une `page` (champ de `etat`) : `progression.mjs page --id <id> --vers <dossier de travail>`,
 `Artifact` `read` de l'URL, puis `Artifact` publish du fichier avec `url` = l'URL (sans
 `capabilities` ni `icon` : ils sont gardés). Cette republication demande la permission :
-annonce-la (« réponds Yes »). Puis `ArtifactData` `get` `coach`/`ecran` pour
+annonce-la (« clique Autoriser »). Puis `ArtifactData` `get` `coach`/`ecran` pour
 connaître `n` et la version, et écris l'écran suivant. Rappelle-lui de recharger la page.
 
 ## Afficher un écran
@@ -72,7 +77,7 @@ avec une ligne dans la fenêtre (« C'est sur ta page. ») : sa réponse te rév
   sauvegardé. Ni cartes ni bandeau : personne ne t'écoute avant la reprise. Écris-le, redis les
   commandes en une ligne dans la fenêtre, puis termine ton tour. `resume` : pour une pause ou
   un arrêt, le Markdown de `progression.mjs resume`, que la page fait copier pour Mario ; `null`
-  pour la relance de l'étape 0.
+  sinon.
 - `travail` (écran `travail`) : la liste de ce que tu fais ; à chaque action finie, `update` de
   `travail` avec la ligne passée à `fait` et la suivante à `en-cours`. Dans `pourTaTache.lignes`,
   le pourquoi de ce que tu fais et un rappel de concept (affichés à côté).
@@ -81,7 +86,7 @@ avec une ligne dans la fenêtre (« C'est sur ta page. ») : sa réponse te rév
 
 ## Quand la page te réveille
 
-Une notification de commentaire « Réponse de l'écran n » arrive : ne réponds pas dans le fil.
+Une notification de commentaire « Page du coach : réponse envoyée (écran n) » arrive : ne réponds pas dans le fil.
 D'abord `ArtifactData` `get` `coach`/`ecran` : si son `n` dépasse celui de la notification, elle
 est déjà traitée (double clic, renvoi) ; termine ton tour sans rien écrire. Sinon, `update` du
 même `n` avec `vu` = l'heure : la page sait que tu as reçu et ne parle pas de silence pendant

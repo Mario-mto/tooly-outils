@@ -40,10 +40,14 @@ test('page.md : notification déjà traitée ignorée, accusé de réception, ba
   assert.ok(page.includes('lis aussi ses choix'), 'Continuer lit les choix');
 });
 
-test('0-installation : pas de bandeau pour la relance, écran relance', () => {
+test('0-installation : ce qui a migré dans la préparation du poste en est sorti', () => {
   const etape = readFileSync(new URL('../skills/coach/etapes/0-installation.md', import.meta.url), 'utf8');
   assert.ok(!etape.includes('bandeau sans'), 'plus de bandeau sans C\'est fait');
-  assert.ok(etape.includes('écran `relance`'));
+  assert.ok(!etape.includes('/chrome'), '/chrome indisponible dans l\'app desktop');
+  assert.ok(!etape.includes('/autocompact'), 'autocompaction posée par la préparation');
+  assert.ok(!etape.includes('chromewebstore'), 'extension installée par la préparation');
+  assert.ok(etape.includes('progression.mjs liste'), 'la sauvegarde reste');
+  assert.ok(etape.includes('accounts.zoho.com'), 'la connexion aux comptes reste');
 });
 
 test('chaque concept a une image du quotidien, sans jargon technique', () => {

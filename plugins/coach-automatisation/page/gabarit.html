@@ -352,7 +352,7 @@ p { margin: 0; }
     let etat = 'erreur';
     try { etat = await comments.canSendToClaude(); } catch (e) { etat = 'erreur'; }
     if (etat !== 'available') { alerte(PLAN_B, 'Réessayer'); return; }
-    const text = `Réponse de l'écran ${nAffiche}`;
+    const text = `Page du coach : réponse envoyée (écran ${nAffiche})`;
     try {
       const cible = threadId
         ? { threadId, text }
