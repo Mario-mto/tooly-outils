@@ -44,12 +44,15 @@ que les outils Apple sont là.
 
 Une commande simple à la fois. Note le résultat de chacune.
 
-**D'abord, les chemins.** Une seule commande lit les variables utiles. Ensuite, écris toujours
-les chemins en toutes lettres dans tes commandes, jamais une variable : une commande avec une
-variable redemande la permission à chaque fois.
+**D'abord, les chemins.** Une seule commande lit les variables utiles, sans écrire de `$` (une
+commande qui contient une variable ne peut pas être contrôlée d'avance et redemande la
+permission à chaque fois). Ensuite, écris toujours les chemins en toutes lettres dans tes
+commandes, jamais une variable.
 
-- Bash : `echo "$CLAUDE_CODE_EXECPATH | $CLAUDE_PID | $CLAUDE_CONFIG_DIR | $HOME"`
-- PowerShell : `"$env:CLAUDE_CODE_EXECPATH | $env:CLAUDE_PID | $env:CLAUDE_CONFIG_DIR | $env:USERPROFILE | $env:LOCALAPPDATA | $env:ProgramFiles"`
+- Bash : `printenv | grep -E '^(CLAUDE_CODE_EXECPATH|CLAUDE_PID|CLAUDE_CONFIG_DIR|HOME)='`
+- PowerShell : `Get-ChildItem Env:CLAUDE_CODE_EXECPATH, Env:CLAUDE_PID, Env:CLAUDE_CONFIG_DIR, Env:USERPROFILE, Env:LOCALAPPDATA -ErrorAction SilentlyContinue`
+
+Une variable absente de la réponse est vide.
 
 Tu en tires deux choses :
 
