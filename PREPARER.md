@@ -16,7 +16,7 @@ il n'ouvre jamais de terminal et ne tape aucune commande.
   par une commande.
 - Ne dis jamais « installé » ou « prêt » sans l'avoir vérifié par une commande juste avant.
 - Avant chaque commande, l'application lui demandera la permission : c'est normal, il répond
-  « Oui ».
+  « Autoriser ».
 
 ## 2. Annonce le chemin
 
@@ -24,7 +24,7 @@ Ton premier message tient en trois lignes, à peu près :
 
 > Je vais vérifier ce dont le coach a besoin sur ton ordinateur : git (sur Mac, les outils
 > Apple qui l'apportent), Node, le coach lui-même et l'extension Claude pour Chrome.
-> Tu n'as rien à taper : je lance les commandes, tu cliques seulement « Oui » quand je te demande
+> Tu n'as rien à taper : je lance les commandes, tu cliques seulement « Autoriser » quand je te demande
 > la permission.
 > S'il faut installer quelque chose, il y aura un seul redémarrage de Chrome et de Claude, à la
 > fin : le coach et l'extension n'apparaissent qu'après.
@@ -193,7 +193,7 @@ chaque fois :
 
 Vérifie ensuite que le dossier de l'extension existe (commande de l'étape 4). Qu'elle soit
 branchée à Claude ne se voit qu'après le redémarrage : le coach le vérifiera.
-Le guide illustré de ce geste : https://claude.ai/artifact/Uw6njsQH9pESbLGxv9jkfD#installer
+Le guide illustré de ce geste : https://claude.ai/artifact/Uw6njsQH9pESbLGxv9jkfD#chrome
 (geste 3, « Chrome et l'extension Claude »).
 
 **Le réglage d'autocompaction** (pendant les longues séances, Claude allège la conversation tout
@@ -235,7 +235,7 @@ réglage seul n'en demande pas.) Dis-lui :
 
 Demande-lui une capture d'écran : Windows + Maj + S, puis Ctrl + V dans la conversation ; sur
 Mac, Cmd + Maj + 4, puis glisse l'image du bureau dans la conversation. Donne aussi le lien du
-guide illustré : https://claude.ai/artifact/Uw6njsQH9pESbLGxv9jkfD#installer
+guide illustré : https://claude.ai/artifact/Uw6njsQH9pESbLGxv9jkfD#chrome
 
 ## Poste déjà prêt
 
