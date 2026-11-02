@@ -172,9 +172,12 @@ seul) :
   et modifie-le avec tes outils de lecture et d'écriture de fichiers, pas par une commande.
 - Annonce : « J'ajoute un réglage dans tes réglages Claude : la conversation s'allégera toute
   seule pendant les longues séances. Je ne touche à rien d'autre. »
-- Le fichier existe : lis-le, ajoute ou remplace la seule clé `"autoCompactWindow": 300000`
-  (un nombre, sans guillemets), garde tout le reste tel quel. Ne remplace jamais le fichier entier.
-- Il n'existe pas : crée-le avec `{ "autoCompactWindow": 300000 }`.
+- Relis-le juste avant d'écrire, même si tu l'as lu à l'étape 4 : l'installation du coach le
+  crée ou le modifie (elle y range l'activation du coach). Ce que tu as vu avant n'est plus vrai.
+- Le fichier existe : ajoute ou remplace la seule clé `"autoCompactWindow": 300000` (un nombre,
+  sans guillemets) par une modification ciblée, et garde tout le reste tel quel. Ne réécris
+  jamais le fichier entier : tu effacerais l'activation du coach.
+- Il n'existe toujours pas à cette relecture : crée-le avec `{ "autoCompactWindow": 300000 }`.
 - Relis-le ensuite pour vérifier que la clé y est et que le fichier reste du JSON valide.
 - Ne touche jamais au fichier `.claude.json` ni à aucun autre réglage.
 
