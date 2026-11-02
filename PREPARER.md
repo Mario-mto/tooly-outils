@@ -44,15 +44,25 @@ que les outils Apple sont là.
 
 Une commande simple à la fois. Note le résultat de chacune.
 
-**Le programme Claude.** Les commandes `plugin` passent par le programme Claude en cours. Trouve
-son chemin dans cet ordre et garde-le pour la suite :
+**D'abord, les chemins.** Une seule commande lit les variables utiles. Ensuite, écris toujours
+les chemins en toutes lettres dans tes commandes, jamais une variable : une commande avec une
+variable redemande la permission à chaque fois.
 
-- la variable `CLAUDE_CODE_EXECPATH` (Bash : `echo "$CLAUDE_CODE_EXECPATH"`) ;
-- si elle est vide, sous Windows : `(Get-Process -Id $env:CLAUDE_PID).Path` dans PowerShell ;
-  sur Mac : `ps -o comm= -p "$CLAUDE_PID"` ;
-- en dernier recours, `claude` s'il répond.
+- Bash : `echo "$CLAUDE_CODE_EXECPATH | $CLAUDE_PID | $CLAUDE_CONFIG_DIR | $HOME"`
+- PowerShell : `"$env:CLAUDE_CODE_EXECPATH | $env:CLAUDE_PID | $env:CLAUDE_CONFIG_DIR | $env:USERPROFILE | $env:LOCALAPPDATA | $env:ProgramFiles"`
 
-Dans la suite, `CLAUDE` désigne ce chemin complet, entre guillemets (PowerShell : `& "<chemin>"`).
+Tu en tires deux choses :
+
+- **Le programme Claude** (les commandes `plugin` passent par lui) : le chemin de
+  `CLAUDE_CODE_EXECPATH`. S'il est vide : sous Windows, `(Get-Process -Id <CLAUDE_PID>).Path`
+  dans PowerShell ; sur Mac, `ps -o comm= -p <CLAUDE_PID>`. En dernier recours, `claude` s'il
+  répond. Dans la suite, `CLAUDE` désigne ce chemin complet, entre guillemets (PowerShell :
+  `& "<chemin>"`).
+- **Le dossier de réglages de Claude** : celui de `CLAUDE_CONFIG_DIR` s'il n'est pas vide, sinon
+  `.claude` dans le dossier de l'utilisateur. C'est là qu'est `settings.json` (étape 5, « Le
+  réglage »). Ne prends pas l'autre quand `CLAUDE_CONFIG_DIR` est rempli.
+
+Lire le dossier de Chrome ou ce dossier de réglages demande aussi la permission : c'est normal.
 
 **Mac :**
 
@@ -72,9 +82,11 @@ Dans la suite, `CLAUDE` désigne ce chemin complet, entre guillemets (PowerShell
 1. git : `git --version`.
 2. Node : `node --version`.
 3. Le coach : `CLAUDE plugin list`, même critère que sur Mac.
-4. Chrome : `Test-Path "$env:ProgramFiles\Google\Chrome\Application\chrome.exe"`, ou le même
-   chemin sous `${env:ProgramFiles(x86)}` ou `$env:LOCALAPPDATA`.
-5. L'extension : `Test-Path "$env:LOCALAPPDATA\Google\Chrome\User Data\*\Extensions\fcoeoabgfenejglbffodgkkbkcdhcgfn"`.
+4. Chrome : `Test-Path "C:\Program Files\Google\Chrome\Application\chrome.exe"` ; si c'est
+   `False`, le même chemin sous `C:\Program Files (x86)` puis sous le dossier `LOCALAPPDATA` lu
+   plus haut.
+5. L'extension : `Test-Path "<LOCALAPPDATA>\Google\Chrome\User Data\*\Extensions\fcoeoabgfenejglbffodgkkbkcdhcgfn"`,
+   avec le chemin `LOCALAPPDATA` lu plus haut écrit en toutes lettres.
 6. Le réglage d'autocompaction : comme sur Mac.
 
 Puis dis-lui en une courte liste ce qui est déjà là et ce qui manque.
@@ -100,7 +112,7 @@ Saute ce qui est déjà là. Avant chaque geste, annonce la fenêtre qu'il va vo
 
 - Annonce : « Windows va te demander si tu autorises l'installation. Clique « Oui ». »
 - Lance `winget install --id Git.Git -e --source winget --accept-package-agreements --accept-source-agreements`.
-- Vérifie : `& "$env:ProgramFiles\Git\cmd\git.exe" --version`. (Le simple `git` ne répondra
+- Vérifie : `& "C:\Program Files\Git\cmd\git.exe" --version`. (Le simple `git` ne répondra
   qu'après le redémarrage, c'est normal.)
 - Si `winget` n'existe pas : donne-lui le lien https://git-scm.com/download/win, dis-lui de
   télécharger, d'ouvrir le fichier et de garder les choix proposés, puis vérifie de la même façon.
@@ -109,7 +121,7 @@ Saute ce qui est déjà là. Avant chaque geste, annonce la fenêtre qu'il va vo
 
 - Windows : annonce la fenêtre « Oui » de Windows, puis
   `winget install --id OpenJS.NodeJS.LTS -e --source winget --accept-package-agreements --accept-source-agreements`.
-  Vérifie : `& "$env:ProgramFiles\nodejs\node.exe" --version`.
+  Vérifie : `& "C:\Program Files\nodejs\node.exe" --version`.
 - Mac : trouve la dernière version LTS :
   `curl -fsSL https://nodejs.org/dist/index.tab | awk -F'\t' 'NR>1 && $10!="-" {print $1; exit}'`
   (elle donne par exemple `v26.13.0`). Télécharge l'installeur officiel :
@@ -127,7 +139,7 @@ Saute ce qui est déjà là. Avant chaque geste, annonce la fenêtre qu'il va vo
 3. Vérifie : `CLAUDE plugin list` contient `coach-automatisation@tooly-outils`.
 
 Sous Windows, si git vient d'être installé, mets-le dans le chemin de la même commande :
-`$env:Path = "$env:ProgramFiles\Git\cmd;$env:Path"; & "<chemin de CLAUDE>" plugin marketplace add Mario-mto/tooly-outils`.
+`$env:Path = "C:\Program Files\Git\cmd;" + $env:Path; & "<chemin de CLAUDE>" plugin marketplace add Mario-mto/tooly-outils`.
 
 **L'extension Claude pour Chrome**, un geste par message, en attendant son « c'est fait » à
 chaque fois :
@@ -152,9 +164,9 @@ Le guide illustré de ce geste : https://claude.ai/artifact/Uw6njsQH9pESbLGxv9jk
 **Le réglage d'autocompaction** (pendant les longues séances, Claude allège la conversation tout
 seul) :
 
-- Le fichier : `settings.json` dans le dossier de réglages de Claude, c'est-à-dire le dossier de
-  la variable `CLAUDE_CONFIG_DIR` si elle existe, sinon `.claude` dans le dossier de l'utilisateur
-  (Windows : `%USERPROFILE%\.claude\settings.json` ; Mac : `~/.claude/settings.json`).
+- Le fichier : `settings.json` dans le dossier de réglages trouvé à l'étape 4 (d'ordinaire
+  Windows : `C:\Users\<nom>\.claude\settings.json` ; Mac : `~/.claude/settings.json`). Lis-le
+  et modifie-le avec tes outils de lecture et d'écriture de fichiers, pas par une commande.
 - Annonce : « J'ajoute un réglage dans tes réglages Claude : la conversation s'allégera toute
   seule pendant les longues séances. Je ne touche à rien d'autre. »
 - Le fichier existe : lis-le, ajoute ou remplace la seule clé `"autoCompactWindow": 300000`
