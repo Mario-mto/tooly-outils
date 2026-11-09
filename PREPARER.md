@@ -189,10 +189,20 @@ chaque fois :
 3. En haut à droite de Chrome, l'icône en forme de pièce de puzzle, puis la punaise à côté de
    Claude : l'icône de Claude reste visible.
 4. Il clique l'icône de Claude et se connecte avec son compte Tooly, le même que dans
-   l'application Claude. Il accepte ce qu'elle demande d'autoriser.
+   l'application Claude, et dans la même organisation (une même adresse peut appartenir à deux
+   organisations : s'il doit choisir, c'est celle de Tooly). Il accepte ce qu'elle demande
+   d'autoriser. Déjà connecté sur une autre organisation ? Dans les réglages de l'extension, il
+   se déconnecte, puis se reconnecte en choisissant celle de Tooly.
+5. Dans l'application Claude, il active le connecteur, désactivé par défaut : ses initiales en
+   bas à gauche, Paramètres, Personnaliser, Connecteurs, Claude in Chrome, Configurer, puis
+   l'activer. Sans ce réglage, Claude ne voit jamais l'extension.
 
-Vérifie ensuite que le dossier de l'extension existe (commande de l'étape 4). Qu'elle soit
-branchée à Claude ne se voit qu'après le redémarrage : le coach le vérifiera.
+Ne lui fais jamais taper `/chrome` : la commande n'existe pas dans l'application Claude
+(« n'est pas disponible dans cet environnement »), c'est le geste 5 qui la remplace.
+
+Vérifie ensuite que le dossier de l'extension existe (commande de l'étape 4). Le compte,
+l'organisation et le connecteur ne se voient pas par une commande, et le branchement à Claude
+seulement après le redémarrage : le coach le vérifiera.
 Le guide illustré de ce geste : https://claude.ai/artifact/Uw6njsQH9pESbLGxv9jkfD#chrome
 (geste 3, « Chrome et l'extension Claude »).
 
@@ -241,7 +251,10 @@ guide illustré : https://claude.ai/artifact/Uw6njsQH9pESbLGxv9jkfD#chrome
 
 Si l'étape 4 montre que tout est là (git, Node, le coach à la même version que le catalogue,
 Chrome et l'extension), n'installe rien. Si seul le réglage d'autocompaction manque, ajoute-le
-(étape 5, « Le réglage »), sans redémarrage. Puis dis :
+(étape 5, « Le réglage »), sans redémarrage. Le dossier de l'extension ne dit pas si elle est
+branchée : donne-lui quand même les gestes 4 et 5 de « L'extension Claude pour Chrome » (étape
+5), un par message, à confirmer. S'il a dû changer l'un des deux, ajoute au message final :
+« Ouvre une nouvelle conversation de l'onglet Code avant de lancer le coach. » Puis dis :
 
 > Ton poste est prêt : git, Node, le coach et l'extension Chrome sont en place. Pas besoin de
 > redémarrer. Tape `/coach-automatisation:coach` pour commencer.

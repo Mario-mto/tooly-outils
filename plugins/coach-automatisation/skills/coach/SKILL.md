@@ -110,24 +110,39 @@ n'existe pas encore. git et le coach ne se vérifient pas : si tu tournes, ils s
    `ToolSearch`, le jeu dont l'étape 0 aura besoin : « select:mcp__claude-in-chrome__tabs_context_mcp,mcp__claude-in-chrome__navigate,mcp__claude-in-chrome__tabs_create_mcp,mcp__claude-in-chrome__tabs_close_mcp,mcp__claude-in-chrome__read_page,mcp__claude-in-chrome__computer ».
    Puis lance `tabs_context_mcp`. S'il répond, l'extension est branchée. Ne conclus qu'elle
    manque que si ces outils sont absents de ta liste et introuvables par `ToolSearch`, ou si
-   `tabs_context_mcp` échoue. Alors, carte « Où en es-tu ? » (header « Extension »), quatre
+   `tabs_context_mcp` échoue. Ne lui fais jamais taper `/chrome` : `/chrome` n'existe pas dans
+   l'application Claude (« n'est pas disponible dans cet environnement »), l'extension s'y
+   branche par un réglage. Les deux réglages qui la branchent, dans cet ordre :
+   - le connecteur : dans l'application Claude, ses initiales en bas à gauche, Paramètres,
+     Personnaliser, Connecteurs, Claude in Chrome, Configurer, puis l'activer (désactivé par
+     défaut) ;
+   - le compte : il clique l'icône de Claude en haut à droite de Chrome et vérifie qu'il y est
+     connecté avec le même compte Tooly et la même organisation que dans l'application Claude
+     (une même adresse peut appartenir à deux organisations). Sinon, dans les réglages de
+     l'extension, il se déconnecte, puis se reconnecte en choisissant l'organisation Tooly.
+   Si l'erreur de `tabs_context_mcp` parle d'un autre compte ou d'une autre organisation,
+   commence par le compte. Alors, carte « Où en es-tu ? » (header « Extension »), quatre
    options, dans cet ordre :
    - « Je ne l'ai pas installée » : la phrase de préparation du point 1 l'installe avec lui.
      Donne-la, au même endroit (nouvelle conversation de l'onglet Code), avec le guide illustré
      https://claude.ai/artifact/Uw6njsQH9pESbLGxv9jkfD#chrome , annonce le redémarrage unique et la
      commande pour reprendre, puis termine ton tour.
-   - « Elle est installée mais Claude ne la voit pas » : dis-lui tout de suite que c'est le
-     redémarrage complet de Chrome et de Claude qui la branche, pas une réinstallation.
-     Windows : fermer toutes les fenêtres de Chrome, fermer l'application Claude, puis près de
-     l'horloge (parfois sous la petite flèche), clic droit sur l'icône de Claude si elle y est
-     encore, Quitter. Mac : Cmd + Q dans Chrome, puis dans l'application Claude (fermer la
-     fenêtre ne suffit pas). Puis rouvrir Chrome, puis l'application Claude, onglet Code, une
-     nouvelle conversation, et taper `/coach-automatisation:coach`. Si l'erreur de
-     `tabs_context_mcp` parle de connexion, ajoute avant : ouvrir l'extension et s'y connecter
-     avec le même compte que dans l'application Claude. Termine ton tour.
-   - « J'ai déjà redémarré, elle reste invisible » : pas de deuxième redémarrage. Donne le
-     guide illustré (https://claude.ai/artifact/Uw6njsQH9pESbLGxv9jkfD#chrome), propose de transmettre à Mario, et continue comme pour « Je n'ai pas
-     Chrome ».
+   - « Elle est installée mais Claude ne la voit pas » : pas de réinstallation. Donne-lui
+     d'abord les deux réglages ci-dessus (le connecteur dans Personnaliser, Connecteurs, Claude
+     in Chrome, puis la même organisation dans l'extension), un geste par message. Puis le
+     redémarrage complet de Chrome et de Claude. Windows : fermer toutes les fenêtres de
+     Chrome, fermer l'application Claude, puis près de l'horloge (parfois sous la petite
+     flèche), clic droit sur l'icône de Claude si elle y est encore, Quitter. Mac : Cmd + Q dans
+     Chrome, puis dans l'application Claude (fermer la fenêtre ne suffit pas). Puis rouvrir
+     Chrome, puis l'application Claude, onglet Code, une nouvelle conversation, et taper
+     `/coach-automatisation:coach`. Termine ton tour.
+   - « J'ai déjà redémarré, elle reste invisible » : pas de deuxième redémarrage tant que les
+     deux réglages ne sont pas vérifiés. Donne-les (le connecteur dans Personnaliser,
+     Connecteurs, Claude in Chrome, puis la même organisation dans l'extension). S'il a dû en
+     changer un : nouvelle conversation de l'onglet Code, `/coach-automatisation:coach`, et
+     termine ton tour. Les deux étaient déjà bons : donne le guide illustré
+     (https://claude.ai/artifact/Uw6njsQH9pESbLGxv9jkfD#chrome), propose de transmettre à
+     Mario, et continue comme pour « Je n'ai pas Chrome ».
    - « Je n'ai pas Chrome » : continue sans Chrome. À l'étape 6, tu le guideras écran par écran.
 3. **Tout est en place** : une ligne (« Ton poste est prêt. »), puis la page (Démarrage,
    point 5).

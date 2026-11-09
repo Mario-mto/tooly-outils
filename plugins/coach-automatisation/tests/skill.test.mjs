@@ -75,6 +75,18 @@ test('extension invisible : redémarrage complet', () => {
   assert.ok(skill().includes(texte) || installation().includes(texte));
 });
 
+test('extension invisible : connecteur et organisation avant le redémarrage, jamais /chrome', () => {
+  const verifier = section(skill(), 'Vérifier le poste').replace(/\s+/g, ' ');
+  const debut = verifier.indexOf('« Elle est installée mais Claude ne la voit pas »');
+  const option = verifier.slice(debut, verifier.indexOf('« J\'ai déjà redémarré', debut));
+  assert.ok(option.includes('Personnaliser, Connecteurs, Claude in Chrome'), 'chemin du connecteur');
+  assert.ok(option.includes('même organisation'), 'organisation de l\'extension');
+  assert.ok(option.indexOf('Connecteurs') < option.indexOf('redémarrage complet'), 'réglages avant redémarrage');
+  const deja = verifier.slice(verifier.indexOf('« J\'ai déjà redémarré'), verifier.indexOf('« Je n\'ai pas Chrome »'));
+  assert.ok(deja.includes('Connecteurs') && deja.includes('même organisation'), 'aussi après un redémarrage');
+  assert.ok(verifier.includes('`/chrome` n\'existe pas dans l\'application Claude'), 'pas de /chrome');
+});
+
 test('aucun tiret long dans le skill', () => {
   const fichiers = readdirSync(SKILLS, { recursive: true }).filter((f) => f.endsWith('.md'));
   assert.ok(fichiers.length >= 10);
